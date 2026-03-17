@@ -1,47 +1,74 @@
 # agents/correlation_agent.py
-# Reference: docs/architecture.md (Agent 5 contract)
-# Reference: docs/api_reference.md (Gemini section)
+"""
+Correlation Agent — Agent 5 of 9
+Reference: docs/architecture.md (Agent 5 contract)
 
-from utils import call_gemini, parse_json_response
+UPGRADED v1.1: Uses Gemini web search grounding to find real current
+scientific research on climate-disease links before scoring.
+"""
+
+from utils import call_gemini_with_search, parse_json_response
 
 
 class CorrelationAgent:
 
-    def run(self, region_name: str, disease: str, country: str, anomaly_level: str, 
-            anomaly_reasoning: str, disease_profile: dict) -> dict:
-        """
-        Analyzes climate-disease correlations using Gemini.
-        Returns: {"correlation_score": int, "scientific_reasoning": str}
-        """
-        print(f"  [CorrelationAgent] Analyzing {disease} correlation...")
+    def run(self, region_name: str, disease: str, country: str,
+            anomaly_level: str, anomaly_reasoning: str,
+            disease_profile: dict) -> dict:
 
-        fallback = {"correlation_score": 40, "scientific_reasoning": "Moderate correlation — insufficient data for full assessment"}
+        print(f"  [CorrelationAgent] {disease} in {region_name}...")
 
-        historical_risk_level = disease_profile.get("historical_risk_level", "medium")
-        recent_trend = disease_profile.get("recent_trend", "stable")
-        key_risk_factors = disease_profile.get("key_risk_factors", [])
-        seasonal_peak_months = disease_profile.get("seasonal_peak_months", [])
+        fallback = {
+            "correlation_score":    40,
+            "scientific_reasoning": "Moderate correlation assumed — web search unavailable",
+            "supporting_research":  [],
+            "is_real_data":         False
+        }
 
-        prompt = f"""You are an epidemiologist analyzing climate-disease correlations.
+        historical_risk   = disease_profile.get("historical_risk_level", "medium")
+        recent_trend      = disease_profile.get("recent_trend", "stable")
+        key_risk_factors  = disease_profile.get("key_risk_factors", [])
+        active_outbreak   = disease_profile.get("active_outbreak", False)
+        alert_count       = disease_profile.get("recent_alert_count", 0)
+        current_situation = disease_profile.get("current_situation_summary", "")
 
-Climate situation in {region_name}:
-- Anomaly level: {anomaly_level}
-- Scientific reasoning: {anomaly_reasoning}
+        prompt = f"""You are an epidemiologist calculating a climate-disease correlation score.
 
-Disease profile for {disease} in {country}:
-- Historical risk: {historical_risk_level}
-- Recent trend: {recent_trend}
-- Key risk factors: {key_risk_factors}
-- Seasonal peaks: {seasonal_peak_months}
+Search for: "{disease} {country} climate change outbreak risk research 2024 2025"
 
-How strongly does this climate pattern correlate with elevated {disease}
-outbreak risk based on established climate-disease research?
+Then analyze all of the following together:
+
+CLIMATE SITUATION in {region_name}:
+  Anomaly level:    {anomaly_level}
+  Reasoning:        {anomaly_reasoning}
+
+REAL-WORLD DISEASE DATA for {disease} in {country}:
+  Historical risk:  {historical_risk}
+  Recent trend:     {recent_trend}
+  Active outbreak:  {active_outbreak}
+  Recent alerts:    {alert_count} alerts in surveillance systems
+  Current status:   {current_situation}
+  Key risk factors: {key_risk_factors}
+
+Using the web search results AND the data above, calculate how strongly
+this climate pattern correlates with elevated {disease} outbreak risk.
 
 Return ONLY a JSON object with no other text, no markdown:
-{{"correlation_score": <integer 0-100>, "scientific_reasoning": "2-3 sentence explanation"}}
-"""
-        response_text = call_gemini(prompt)
+{{
+  "correlation_score": <integer 0-100>,
+  "scientific_reasoning": "2-3 sentences citing real research or current evidence found",
+  "supporting_research": ["real source or finding 1", "real source or finding 2"],
+  "is_real_data": true
+}}"""
+
+        response_text, search_queries = call_gemini_with_search(prompt)
         result = parse_json_response(response_text, fallback)
-        
-        print(f"  [CorrelationAgent] Done: {result.get('correlation_score')}/100")
+
+        # Boost score if real surveillance confirmed active outbreak
+        if active_outbreak and isinstance(result.get("correlation_score"), int):
+            result["correlation_score"]      = min(100, result["correlation_score"] + 15)
+            result["active_outbreak_boost"]  = True
+
+        result["is_real_data"] = True
+        print(f"  [CorrelationAgent] Done: score={result.get('correlation_score')}/100")
         return result

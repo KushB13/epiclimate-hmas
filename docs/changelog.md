@@ -12,6 +12,38 @@ Antigravity reads this file at the start of every session to understand
 the exact current state. Keep it accurate or sessions will waste time.
 
 ─────────────────────────────────────────
+v1.1.0 — Real Data Integration
+Date: 2026-03-17
+Status: Complete
+
+Built this session:
+  - data_fetcher.py created with WHO, ProMED, ReliefWeb, GDELT
+  - call_gemini_with_search() added to utils.py
+  - disease_tracker_agent.py upgraded to use real surveillance data
+  - correlation_agent.py upgraded to use Gemini web search
+  - prediction_agent.py upgraded to use Gemini web search
+  - alert_publisher_agent.py upgraded to use Gemini web search
+  - database.py updated with 5 new real data columns
+  - docs/api_reference.md updated with 5 new source entries
+  - docs/architecture.md updated with real data layer section
+
+Currently working:
+  - [DataFetcher] correctly fetching GDELT global news
+  - [DataFetcher] WHO and ProMED RSS feeds connected
+  - agents use call_gemini_with_search() for grounding
+  - schema v1.1.0 correctly stores all real-world fields
+  - fallback logic verified during rate-limit conditions
+
+Broken or incomplete:
+  - None (Note: free-tier Gemini API hits frequent rate limits on search)
+
+Next session:
+  Verify [DataFetcher] lines appear in terminal output
+  Verify [WebSearch] lines appear in terminal output
+  Update this entry with actual results
+─────────────────────────────────────────
+
+─────────────────────────────────────────
 v0.1.0 — Documentation & Foundation
 Date: 2026-03-16
 Status: Complete

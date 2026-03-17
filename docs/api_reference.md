@@ -106,3 +106,54 @@ Only use these functions from database.py:
   init_db()                    call once at startup in main.py
   save_prediction(full_report) call after each complete pipeline run
   rows = get_all_predictions() call to read all saved results
+
+═══════════════════════════════════════
+5. WHO Disease Outbreak News RSS
+═══════════════════════════════════════
+URL:    https://www.who.int/feeds/entity/csr/don/en/rss.xml
+Auth:   None required
+Format: XML/RSS
+Call:   data_fetcher.fetch_who_outbreaks(disease, country)
+Returns: list of {title, link, description, pub_date, source}
+Notes:  Official UN outbreak declarations, updated in real time
+
+═══════════════════════════════════════
+6. ProMED Early Warning RSS
+═══════════════════════════════════════
+URL:    https://promedmail.org/promed-rss/
+Auth:   None required
+Format: XML/RSS
+Call:   data_fetcher.fetch_promed_alerts(disease, country)
+Returns: list of {title, link, description, pub_date, source}
+Notes:  Often 2-4 weeks ahead of official WHO declarations
+
+═══════════════════════════════════════
+7. ReliefWeb Disasters API
+═══════════════════════════════════════
+URL:    https://api.reliefweb.int/v1/disasters
+Auth:   None required
+Format: REST JSON
+Call:   data_fetcher.fetch_reliefweb_outbreaks(country)
+Returns: list of {name, countries, status, date_start, url, source}
+Notes:  UN humanitarian platform, active disaster records
+
+═══════════════════════════════════════
+8. GDELT Document API
+═══════════════════════════════════════
+URL:    https://api.gdeltproject.org/api/v2/doc/doc
+Auth:   None required
+Format: REST JSON
+Call:   data_fetcher.fetch_gdelt_news(query, max_items)
+Returns: list of {title, url, domain, date, source}
+Notes:  Monitors every news outlet on Earth in real time
+
+═══════════════════════════════════════
+9. Gemini Web Search Grounding
+═══════════════════════════════════════
+SDK:    google-genai with types.Tool(google_search=types.GoogleSearch())
+Auth:   Same GEMINI_API_KEY — no extra setup needed
+Call:   utils.call_gemini_with_search(prompt)
+Returns: (response_text: str, search_queries: list)
+Notes:  Gemini searches Google live during generation
+        Falls back to call_gemini() automatically if search fails
+        Used by: CorrelationAgent, PredictionAgent, AlertPublisherAgent

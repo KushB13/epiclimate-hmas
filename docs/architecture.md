@@ -98,6 +98,33 @@ Agent 9  AlertPublisherAgent
 6. All constants live in config.py — no hardcoded values in agents
 7. All results saved via database.save_prediction() — never direct sqlite3
 
+## Real Data Sources (added v1.1)
+
+A data layer sits below Tier 2 and feeds real live information
+into agents before Gemini reasoning happens.
+
+Data layer → Tier 2B:
+  data_fetcher.py collects from 4 sources before DiseaseTrackerAgent runs:
+    WHO RSS        → real outbreak declarations
+    ProMED RSS     → early warning signals (2-4 weeks before WHO)
+    ReliefWeb API  → active disaster records
+    GDELT API      → global news in real time
+
+Gemini web search grounding:
+  CorrelationAgent, PredictionAgent, AlertPublisherAgent all use
+  call_gemini_with_search() which gives Gemini live Google access
+
+New output fields added in v1.1:
+  active_outbreak      bool  — real surveillance confirmed outbreak
+  recent_alert_count   int   — number of real alerts found
+  is_real_data         bool  — True means real sources were used
+  data_sources         list  — which sources contributed
+  real_world_advisories str  — real WHO/CDC advisories found
+
+New files added in v1.1:
+  data_fetcher.py      — all 4 real data sources
+  utils.call_gemini_with_search() — Gemini live web search
+
 ## File Responsibility Map
 config.py        all constants and test cases
 utils.py         Gemini client, API caller, JSON parser, print helpers

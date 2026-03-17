@@ -42,7 +42,12 @@ def init_db():
             recommended_actions      TEXT,
             urgency_level            TEXT,
             lead_time_weeks          INTEGER,
-            alert_text               TEXT
+            alert_text               TEXT,
+            active_outbreak        INTEGER,
+            recent_alert_count     INTEGER,
+            is_real_data           INTEGER,
+            data_sources           TEXT,
+            real_world_advisories  TEXT
         )
     """)
     conn.commit()
@@ -62,8 +67,10 @@ def save_prediction(data: dict):
             historical_risk_level, recent_trend, correlation_score,
             scientific_reasoning, risk_score, confidence, predicted_window,
             key_factors, high_risk_zones, population_at_risk,
-            recommended_actions, urgency_level, lead_time_weeks, alert_text
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            recommended_actions, urgency_level, lead_time_weeks, alert_text,
+            active_outbreak, recent_alert_count, is_real_data,
+            data_sources, real_world_advisories
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     """, (
         datetime.now().isoformat(),
         data.get("region_name"),       data.get("country"),
@@ -82,6 +89,11 @@ def save_prediction(data: dict):
         json.dumps(data.get("recommended_actions", [])),
         data.get("urgency_level"),     data.get("lead_time_weeks"),
         data.get("alert_text"),
+        int(data.get("active_outbreak", False)),
+        data.get("recent_alert_count", 0),
+        int(data.get("is_real_data", False)),
+        json.dumps(data.get("data_sources", [])),
+        data.get("real_world_advisories", "none found"),
     ))
     conn.commit()
     conn.close()
