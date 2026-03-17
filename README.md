@@ -49,6 +49,16 @@ graph TD
    python main.py
    ```
 
+### Web UI (Agent Development Kit)
+
+This system is compatible with the **Google ADK** Web UI. To launch the interactive browser-based dashboard:
+
+```bash
+python -m google.adk.cli web app
+```
+
+Once running, you can chat with the `epiclimate_hmas_master` agent to run reports or analyze specific tiers.
+
 ## Science Fair Test Cases
 
 | Case | Country | Disease | Year | Rationale |

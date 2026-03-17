@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GEMINI_API_KEY             = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL               = "gemini-2.0-flash"
+GEMINI_MODEL               = "gemini-1.5-flash"
 OPEN_METEO_CURRENT_URL     = "https://api.open-meteo.com/v1/forecast"
 OPEN_METEO_ARCHIVE_URL     = "https://archive-api.open-meteo.com/v1/archive"
 HISTORICAL_DAYS            = 90
