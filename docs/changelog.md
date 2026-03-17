@@ -12,6 +12,49 @@ Antigravity reads this file at the start of every session to understand
 the exact current state. Keep it accurate or sessions will waste time.
 
 ─────────────────────────────────────────
+─────────────────────────────────────────
+─────────────────────────────────────────
+v1.2.1 — Documentation & Config Sync
+Date: 2026-03-17
+Status: Complete
+
+Built this session:
+  - Synchronized `docs/architecture.md` with new `epiclimate_hmas/internal/` package structure.
+  - Updated `.gitignore` to cover `.venv`, `__pycache__`, and `epiclimate.db`.
+  - Updated `README.md` to reflect current system state and usage.
+  - Verified system integrity by running all tests.
+
+Currently working:
+  - Full system functionality with ADK Web UI and CLI.
+
+Broken or incomplete:
+  - None
+
+Next session:
+  - Monitor Gemini search usage for rate limit optimizations.
+─────────────────────────────────────────
+v1.2.0 — ADK Integration & Refactor
+Date: 2026-03-17
+Status: Complete
+
+Built this session:
+  - Project restructured into `epiclimate_hmas/` package.
+  - Internal logic moved to `epiclimate_hmas/internal/`.
+  - Added `epiclimate_hmas/agent.py` for Google ADK root agent definition.
+  - Updated `main.py` to use the new package structure.
+  - Synchronized documentation with the new architecture.
+  - Updated `.gitignore` to exclude `.adk/` local data.
+
+Currently working:
+  - System is fully functional with ADK Web UI.
+  - Command line `main.py` is operational.
+
+Broken or incomplete:
+  - None
+
+Next session:
+  - Monitor Gemini search usage for rate limit optimizations.
+─────────────────────────────────────────
 v1.1.0 — Real Data Integration
 Date: 2026-03-17
 Status: Complete

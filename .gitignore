@@ -8,3 +8,12 @@ __pycache__/
 dist/
 build/
 .DS_Store
+.adk/
+.venv/
+.agents/
+.agent/
+_agents/
+_agent/
+node_modules/
+package-lock.json
+

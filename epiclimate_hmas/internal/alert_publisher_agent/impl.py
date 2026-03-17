@@ -1,14 +1,13 @@
-# agents/alert_publisher_agent.py
-"""
-Alert Publisher Agent — Agent 9 of 9
-Reference: docs/architecture.md (Agent 9 contract)
+import os
+import sys
 
-UPGRADED v1.1: Uses Gemini web search to find real current WHO/CDC
-bulletin language and outbreak context before writing the alert.
-"""
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 
 from utils import call_gemini_with_search, call_gemini
-
 
 class AlertPublisherAgent:
 
@@ -56,7 +55,6 @@ Maximum 150 words. Plain text ONLY. No JSON. No markdown.
 
         response_text, search_queries = call_gemini_with_search(prompt)
 
-        # Fall back to standard call if search failed
         if not response_text or len(response_text.strip()) < 20:
             response_text = call_gemini(
                 prompt.replace(
@@ -72,3 +70,5 @@ Maximum 150 words. Plain text ONLY. No JSON. No markdown.
 
         print(f"  [AlertPublisherAgent] Done: {len(alert_text)} chars")
         return {"alert_text": alert_text, "is_real_data": True}
+
+

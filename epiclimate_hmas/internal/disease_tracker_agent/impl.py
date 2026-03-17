@@ -1,19 +1,14 @@
-# agents/disease_tracker_agent.py
-"""
-Disease Tracker Agent — Agent 4 of 9
-Reference: docs/architecture.md (Agent 4 contract)
-Reference: docs/api_reference.md (WHO RSS, ProMED, ReliefWeb, GDELT sections)
+import os
+import sys
 
-UPGRADED v1.1: Fetches REAL live outbreak data before asking Gemini.
-Data flow:
-  1. data_fetcher.fetch_all_outbreak_intelligence() pulls real alerts
-  2. Real alerts injected into Gemini prompt as context
-  3. Gemini analyzes real data, not guesses from training
-"""
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 
 from utils import call_gemini, parse_json_response
 from data_fetcher import fetch_all_outbreak_intelligence
-
 
 class DiseaseTrackerAgent:
 
@@ -35,11 +30,8 @@ class DiseaseTrackerAgent:
             "data_sources":              []
         }
 
-        # Step 1 — fetch real data from all sources
         real_data    = fetch_all_outbreak_intelligence(country, disease)
         sources_used = []
-
-        # Step 2 — format real data as readable context for Gemini
         context_lines = []
 
         if real_data["who_alerts"]:
@@ -72,7 +64,6 @@ class DiseaseTrackerAgent:
                          len(real_data["reliefweb_events"]))
         active_outbreak = total_alerts > 0
 
-        # Step 3 — build prompt with real data injected
         prompt = f"""You are a WHO epidemiologist analyzing real surveillance data.
 
 REAL-TIME SURVEILLANCE DATA FOR {disease.upper()} IN {country.upper()}:
@@ -98,7 +89,6 @@ Return ONLY a JSON object with no other text, no markdown, no explanation:
         response_text = call_gemini(prompt)
         result        = parse_json_response(response_text, fallback)
 
-        # Step 4 — attach real data metadata
         result["recent_alert_count"] = total_alerts
         result["active_outbreak"]    = active_outbreak
         result["is_real_data"]       = True
@@ -107,3 +97,5 @@ Return ONLY a JSON object with no other text, no markdown, no explanation:
         print(f"  [DiseaseTrackerAgent] Done: risk={result.get('historical_risk_level')}, "
               f"alerts={total_alerts}, active_outbreak={active_outbreak}")
         return result
+
+

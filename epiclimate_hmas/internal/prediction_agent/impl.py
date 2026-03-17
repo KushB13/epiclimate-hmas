@@ -1,14 +1,13 @@
-# agents/prediction_agent.py
-"""
-Prediction Agent — Agent 6 of 9
-Reference: docs/architecture.md (Agent 6 contract)
+import os
+import sys
 
-UPGRADED v1.1: Uses Gemini web search to find real current WHO/CDC
-outbreak forecasts and advisories before generating its prediction.
-"""
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 
 from utils import call_gemini_with_search, parse_json_response
-
 
 class PredictionAgent:
 
@@ -63,3 +62,5 @@ Return ONLY a JSON object with no other text, no markdown:
         print(f"  [PredictionAgent] Done: risk={result.get('risk_score')}/100, "
               f"confidence={result.get('confidence')}, window={result.get('predicted_window')}")
         return result
+
+

@@ -1,11 +1,16 @@
-# orchestrators/climate_orchestrator.py
-# Reference: docs/architecture.md (Tier 2A section)
+import os
+import sys
 
-from agents.temperature_agent import TemperatureAgent
-from agents.precipitation_agent import PrecipitationAgent
-from agents.anomaly_detector_agent import AnomalyDetectorAgent
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+
+from epiclimate_hmas.internal.temperature_agent.impl import TemperatureAgent
+from epiclimate_hmas.internal.precipitation_agent.impl import PrecipitationAgent
+from epiclimate_hmas.internal.anomaly_detector_agent.impl import AnomalyDetectorAgent
 from utils import print_section
-
 
 class ClimateOrchestrator:
 
@@ -43,3 +48,5 @@ class ClimateOrchestrator:
         except Exception as e:
             print(f"  [ClimateOrch] ERROR: {e} — using fallback")
             return fallback
+
+

@@ -2,11 +2,10 @@
 # Reference: docs/experiment_design.md (test case rationale)
 # Reference: docs/project_specs.md (science fair context)
 
-import time
+import sys
 from database import init_db
-from orchestrators.main_orchestrator import MainOrchestrator
-from config import TEST_CASES
-from utils import print_section
+from epiclimate_hmas.agent import MainOrchestrator
+from utils import print_section, geocode_location
 
 
 def main():
@@ -20,37 +19,49 @@ def main():
 
     init_db()
     orchestrator = MainOrchestrator()
-    results = []
 
-    for i, case in enumerate(TEST_CASES, 1):
-        print(f"\n\n{'#'*60}")
-        print(f"  TEST CASE {i} of {len(TEST_CASES)}")
-        print(f"{'#'*60}")
+    while True:
+        print_section("HMAS INTERACTIVE MODE")
+        print("  Enter details for a new prediction (or type 'quit' to exit).")
+        
+        region_name = input("\n  Target Location (e.g., Lima, Peru): ").strip()
+        if region_name.lower() in ["quit", "exit", "q"]:
+            break
+            
+        disease = input("  Target Disease (e.g., Dengue): ").strip()
+        if not disease:
+            disease = "Dengue" # Default
+            print(f"  [Using default: {disease}]")
 
-        result = orchestrator.run(
-            region_name=case["region_name"],
-            lat=case["lat"], lon=case["lon"],
-            country=case["country"], disease=case["disease"]
-        )
-        results.append(result)
+        print(f"  [Geocoding '{region_name}'...]")
+        lat, lon, country = geocode_location(region_name)
 
-        if i < len(TEST_CASES):
-            print(f"\n  [Pausing before next case...]\n")
-            time.sleep(3)
+        if lat is None:
+            print(f"  [ERROR] Could not find coordinates for '{region_name}'.")
+            print("  Please try a more specific name (e.g., 'City, Country').")
+            continue
 
-    print_section("COMPLETE RUN SUMMARY")
-    print(f"  {'Region':<14} {'Disease':<10} {'Risk':<8} {'Conf':<8} {'Urgency'}")
-    print(f"  {'-'*52}")
-    for r in results:
-        print(f"  {r.get('region_name','?'):<14} "
-              f"{r.get('disease','?'):<10} "
-              f"{str(r.get('risk_score','?'))+'/100':<8} "
-              f"{r.get('confidence','?'):<8} "
-              f"{r.get('urgency_level','?')}")
+        print(f"  [Found: {country} | Lat: {lat}, Lon: {lon}]")
+        
+        try:
+            orchestrator.run(
+                region_name=region_name,
+                lat=lat, lon=lon,
+                country=country if country else region_name, 
+                disease=disease
+            )
+        except KeyboardInterrupt:
+            print("\n  [Prediction Interrupted]")
+        except Exception as e:
+            print(f"\n  [ERROR] Prediction failed: {e}")
 
-    print(f"\n  Results saved to: epiclimate.db")
-    print(f"  Predictions logged: {len(results)}")
-    print(f"\n{'='*60}\n")
+        print("\n" + "-"*60)
+        choice = input("  Run another? (y/n): ").lower()
+        if choice.startswith('n'):
+            break
+
+    print("\n  Thank you for using EpiClimate HMAS. Results are saved in epiclimate.db.")
+    print(f"{'='*60}\n")
 
 
 if __name__ == "__main__":

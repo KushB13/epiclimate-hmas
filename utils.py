@@ -147,3 +147,17 @@ def print_section(title: str):
 
 def print_result(label: str, value):
     print(f"  {label:<32} {value}")
+
+
+def geocode_location(name: str) -> tuple:
+    """
+    Looks up lat/lon for a city/region name using Open-Meteo Geocoding.
+    Returns (lat, lon, country_name) or (None, None, None) on failure.
+    """
+    url = "https://geocoding-api.open-meteo.com/v1/search"
+    res = safe_api_call(url, {"name": name, "count": 1, "language": "en", "format": "json"})
+    results = res.get("results", [])
+    if results:
+        r = results[0]
+        return r.get("latitude"), r.get("longitude"), r.get("country", "")
+    return None, None, None

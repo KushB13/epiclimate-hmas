@@ -1,11 +1,16 @@
-# orchestrators/response_orchestrator.py
-# Reference: docs/architecture.md (Tier 2C section)
+import os
+import sys
 
-from agents.risk_mapper_agent import RiskMapperAgent
-from agents.resource_recommender_agent import ResourceRecommenderAgent
-from agents.alert_publisher_agent import AlertPublisherAgent
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+
+from epiclimate_hmas.internal.risk_mapper_agent.impl import RiskMapperAgent
+from epiclimate_hmas.internal.resource_recommender_agent.impl import ResourceRecommenderAgent
+from epiclimate_hmas.internal.alert_publisher_agent.impl import AlertPublisherAgent
 from utils import print_section
-
 
 class ResponseOrchestrator:
 
@@ -57,3 +62,5 @@ class ResponseOrchestrator:
         except Exception as e:
             print(f"  [ResponseOrch] ERROR: {e} — using fallback")
             return fallback
+
+

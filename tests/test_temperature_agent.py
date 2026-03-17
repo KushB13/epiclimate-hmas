@@ -3,7 +3,7 @@
 
 import pytest
 from unittest.mock import patch
-from agents.temperature_agent import TemperatureAgent
+from epiclimate_hmas.internal.temperature_agent.impl import TemperatureAgent
 
 @pytest.fixture
 def agent():
@@ -14,7 +14,7 @@ def test_temperature_agent_success(agent):
     mock_current = {"current": {"temperature_2m": 30.5}}
     mock_archive = {"daily": {"temperature_2m_mean": [25.0, 26.0, 24.0]}}
     
-    with patch("agents.temperature_agent.safe_api_call") as mock_safe_call:
+    with patch("epiclimate_hmas.internal.temperature_agent.impl.safe_api_call") as mock_safe_call:
         mock_safe_call.side_effect = [mock_current, mock_archive]
         
         result = agent.run("Test Region", 0.0, 0.0)
@@ -26,7 +26,7 @@ def test_temperature_agent_success(agent):
 
 def test_temperature_agent_api_failure(agent):
     """Test API_FAILURE: Verifies agent handles failure and returns fallback."""
-    with patch("agents.temperature_agent.safe_api_call") as mock_safe_call:
+    with patch("epiclimate_hmas.internal.temperature_agent.impl.safe_api_call") as mock_safe_call:
         mock_safe_call.return_value = {} # Simulated failure
         
         result = agent.run("Test Region", 0.0, 0.0)
@@ -40,7 +40,7 @@ def test_temperature_agent_archive_missing(agent):
     """Test ARCHIVE_MISSING: Verifies agent handles missing archive data."""
     mock_current = {"current": {"temperature_2m": 28.0}}
     
-    with patch("agents.temperature_agent.safe_api_call") as mock_safe_call:
+    with patch("epiclimate_hmas.internal.temperature_agent.impl.safe_api_call") as mock_safe_call:
         mock_safe_call.side_effect = [mock_current, {}]
         
         result = agent.run("Test Region", 0.0, 0.0)

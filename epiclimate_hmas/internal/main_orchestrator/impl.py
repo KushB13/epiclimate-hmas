@@ -1,14 +1,19 @@
-# orchestrators/main_orchestrator.py
-# Reference: docs/architecture.md (Tier 1 and Data Flow sections)
-
+import os
+import sys
 import time
-from orchestrators.climate_orchestrator import ClimateOrchestrator
-from orchestrators.epi_orchestrator import EpiOrchestrator
-from orchestrators.response_orchestrator import ResponseOrchestrator
+
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+
+from epiclimate_hmas.internal.climate_orchestrator.impl import ClimateOrchestrator
+from epiclimate_hmas.internal.epi_orchestrator.impl import EpiOrchestrator
+from epiclimate_hmas.internal.response_orchestrator.impl import ResponseOrchestrator
 from database import save_prediction
 from utils import print_section, print_result
 from config import PIPELINE_PAUSE_SECONDS
-
 
 class MainOrchestrator:
 
@@ -67,3 +72,5 @@ class MainOrchestrator:
                 line += w + " "
         if line.strip():
             print(line)
+
+

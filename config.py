@@ -16,11 +16,11 @@ RISK_HIGH                  = 80
 GEMINI_RETRY_WAIT_SECONDS  = 60
 PIPELINE_PAUSE_SECONDS     = 3
 
-# Science fair test cases — see docs/experiment_design.md for rationale
+# Current test cases — uses live data for every run
 TEST_CASES = [
-    {"region_name": "Brazil",      "lat": -14.2,  "lon": -51.9, "country": "Brazil",      "disease": "dengue"},
-    {"region_name": "Sudan",       "lat":  12.8,  "lon":  30.2, "country": "Sudan",       "disease": "cholera"},
-    {"region_name": "Kenya",       "lat":  -0.02, "lon":  37.9, "country": "Kenya",       "disease": "malaria"},
-    {"region_name": "Bangladesh",  "lat":  23.7,  "lon":  90.4, "country": "Bangladesh",  "disease": "dengue"},
-    {"region_name": "Mozambique",  "lat": -18.7,  "lon":  35.5, "country": "Mozambique",  "disease": "cholera"},
+    {"region_name": "Peru",         "lat": -9.19,  "lon": -75.01, "country": "Peru",         "disease": "dengue"},
+    {"region_name": "Zambia",       "lat": -13.13, "lon":  27.85, "country": "Zambia",       "disease": "cholera"},
+    {"region_name": "Pakistan",     "lat": 30.37,  "lon":  69.34, "country": "Pakistan",     "disease": "malaria"},
+    {"region_name": "Philippines",  "lat": 12.87,  "lon": 121.77, "country": "Philippines",  "disease": "leptospirosis"},
+    {"region_name": "Nigeria",      "lat":  9.08,  "lon":   8.67, "country": "Nigeria",      "disease": "lassa fever"},
 ]

@@ -1,11 +1,15 @@
-# agents/precipitation_agent.py
-# Reference: docs/architecture.md (Agent 2 contract)
-# Reference: docs/api_reference.md (Open-Meteo Current + Archive sections)
-
+import os
+import sys
 from datetime import datetime, timedelta
+
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+
 from utils import safe_api_call
 from config import OPEN_METEO_CURRENT_URL, OPEN_METEO_ARCHIVE_URL, HISTORICAL_DAYS
-
 
 class PrecipitationAgent:
 
@@ -64,3 +68,5 @@ class PrecipitationAgent:
             "precip_anomaly_mm": anomaly,
             "current_humidity_pct": current_humidity
         }
+
+

@@ -1,11 +1,16 @@
-# orchestrators/epi_orchestrator.py
-# Reference: docs/architecture.md (Tier 2B section)
+import os
+import sys
 
-from agents.disease_tracker_agent import DiseaseTrackerAgent
-from agents.correlation_agent import CorrelationAgent
-from agents.prediction_agent import PredictionAgent
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+
+from epiclimate_hmas.internal.disease_tracker_agent.impl import DiseaseTrackerAgent
+from epiclimate_hmas.internal.correlation_agent.impl import CorrelationAgent
+from epiclimate_hmas.internal.prediction_agent.impl import PredictionAgent
 from utils import print_section
-
 
 class EpiOrchestrator:
 
@@ -52,3 +57,5 @@ class EpiOrchestrator:
         except Exception as e:
             print(f"  [EpiOrch] ERROR: {e} — using fallback")
             return fallback
+
+

@@ -9,28 +9,25 @@ Total: 1 main + 3 sub-orchestrators + 9 agents = 13 active components
 ## Tier Map
 
 TIER 1
-MainOrchestrator
+MainOrchestrator (epiclimate_hmas/internal/main_orchestrator/impl.py)
   Input:  region_name, lat, lon, country, disease
   Output: full_report dict
   Saves:  epiclimate.db
 
-TIER 2A — Climate Intelligence
-ClimateOrchestrator
-  Agent 1: TemperatureAgent         current temp vs 90-day avg → anomaly_c
-  Agent 2: PrecipitationAgent       rainfall + humidity vs avg → anomaly_mm
+TIER 2A — Climate Intelligence (epiclimate_hmas/internal/climate_orchestrator/impl.py)
+  Agent 1: TemperatureAgent         current temp vs 90-day avg
+  Agent 2: PrecipitationAgent       rainfall + humidity vs avg
   Agent 3: AnomalyDetectorAgent     classifies → LOW/MEDIUM/HIGH/CRITICAL
 
-TIER 2B — Epidemiological Intelligence
-EpiOrchestrator
-  Agent 4: DiseaseTrackerAgent      historical risk profile by country+disease
-  Agent 5: CorrelationAgent         climate anomaly × disease history → score
-  Agent 6: PredictionAgent          risk_score, confidence, predicted_window
+TIER 2B — Epidemiological Intelligence (epiclimate_hmas/internal/epi_orchestrator/impl.py)
+  Agent 4: DiseaseTrackerAgent      historical risk profile
+  Agent 5: CorrelationAgent         climate anomaly × disease history
+  Agent 6: PredictionAgent          risk_score, confidence
 
-TIER 2C — Response Intelligence
-ResponseOrchestrator
-  Agent 7: RiskMapperAgent          high_risk_zones, population_at_risk
-  Agent 8: ResourceRecommenderAgent recommended_actions, urgency_level
-  Agent 9: AlertPublisherAgent      WHO-style plain-English alert bulletin
+TIER 2C — Response Intelligence (epiclimate_hmas/internal/response_orchestrator/impl.py)
+  Agent 7: RiskMapperAgent          high_risk_zones
+  Agent 8: ResourceRecommenderAgent recommended_actions
+  Agent 9: AlertPublisherAgent      WHO-style alert bulletin
 
 ## Data Flow
 1. main.py calls MainOrchestrator.run(region, lat, lon, country, disease)
@@ -129,8 +126,14 @@ New files added in v1.1:
 config.py        all constants and test cases
 utils.py         Gemini client, API caller, JSON parser, print helpers
 database.py      SQLite init, save, and read functions
-main.py          entry point — runs all 5 test cases, prints summary
-agents/          9 specialist agents — one class per file
-orchestrators/   4 orchestrators — one class per file
-tests/           9 unit test files + 1 integration test
-docs/            project documentation — never modify during builds
+main.py          standard CLI entry point
+epiclimate_hmas/ root package containing ADK agent entry
+  agent.py       Google ADK root agent definition
+  internal/      all 9 specialists and 4 orchestrators (organized by folder)
+    climate_orchestrator/ (TemperatureAgent, PrecipitationAgent, AnomalyDetectorAgent)
+    epi_orchestrator/     (DiseaseTrackerAgent, CorrelationAgent, PredictionAgent)
+    response_orchestrator/ (RiskMapperAgent, ResourceRecommenderAgent, AlertPublisherAgent)
+    main_orchestrator/    (MainOrchestrator)
+tests/           refactored unit tests
+docs/            project documentation
+

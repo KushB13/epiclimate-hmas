@@ -1,9 +1,13 @@
-# agents/risk_mapper_agent.py
-# Reference: docs/architecture.md (Agent 7 contract)
-# Reference: docs/api_reference.md (Gemini section)
+import os
+import sys
+
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 
 from utils import call_gemini, parse_json_response
-
 
 class RiskMapperAgent:
 
@@ -42,3 +46,5 @@ Return ONLY a JSON object with no other text, no markdown:
         
         print(f"  [RiskMapperAgent] Done.")
         return result
+
+

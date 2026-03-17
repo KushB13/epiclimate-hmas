@@ -2,7 +2,7 @@
 # Reference: SKILL_TESTING.md (Rule 3: Only test_integration.py uses real APIs)
 
 import pytest
-from orchestrators.main_orchestrator import MainOrchestrator
+from epiclimate_hmas.agent import MainOrchestrator
 from database import init_db
 
 @pytest.mark.integration

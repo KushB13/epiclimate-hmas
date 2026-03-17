@@ -1,14 +1,13 @@
-# agents/correlation_agent.py
-"""
-Correlation Agent — Agent 5 of 9
-Reference: docs/architecture.md (Agent 5 contract)
+import os
+import sys
 
-UPGRADED v1.1: Uses Gemini web search grounding to find real current
-scientific research on climate-disease links before scoring.
-"""
+# Ensure the root directory is in sys.path
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
 
 from utils import call_gemini_with_search, parse_json_response
-
 
 class CorrelationAgent:
 
@@ -64,7 +63,6 @@ Return ONLY a JSON object with no other text, no markdown:
         response_text, search_queries = call_gemini_with_search(prompt)
         result = parse_json_response(response_text, fallback)
 
-        # Boost score if real surveillance confirmed active outbreak
         if active_outbreak and isinstance(result.get("correlation_score"), int):
             result["correlation_score"]      = min(100, result["correlation_score"] + 15)
             result["active_outbreak_boost"]  = True
@@ -72,3 +70,5 @@ Return ONLY a JSON object with no other text, no markdown:
         result["is_real_data"] = True
         print(f"  [CorrelationAgent] Done: score={result.get('correlation_score')}/100")
         return result
+
+

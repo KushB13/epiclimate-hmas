@@ -3,7 +3,7 @@
 
 import pytest
 from unittest.mock import patch
-from agents.anomaly_detector_agent import AnomalyDetectorAgent
+from epiclimate_hmas.internal.anomaly_detector_agent.impl import AnomalyDetectorAgent
 
 @pytest.fixture
 def agent():
@@ -13,7 +13,7 @@ def test_anomaly_detector_success(agent):
     """Test SUCCESS: Verifies agent returns correct analysis when Gemini responds perfectly."""
     mock_json = '{"anomaly_level": "HIGH", "reasoning": "Extreme rainfall detected."}'
     
-    with patch("agents.anomaly_detector_agent.call_gemini") as mock_call:
+    with patch("epiclimate_hmas.internal.anomaly_detector_agent.impl.call_gemini") as mock_call:
         mock_call.return_value = mock_json
         
         result = agent.run("Test Region", 2.5, 150.0, 85.0)
@@ -23,7 +23,7 @@ def test_anomaly_detector_success(agent):
 
 def test_anomaly_detector_gemini_failure(agent):
     """Test API_FAILURE: Verifies agent handles Gemini failure and returns fallback."""
-    with patch("agents.anomaly_detector_agent.call_gemini") as mock_call:
+    with patch("epiclimate_hmas.internal.anomaly_detector_agent.impl.call_gemini") as mock_call:
         mock_call.return_value = "" # Simulated failure
         
         result = agent.run("Test Region", 0.0, 0.0, 60.0)
@@ -35,7 +35,7 @@ def test_anomaly_detector_malformed_json(agent):
     """Test JSON_MALFORMED: Verifies agent handles garbage JSON string."""
     mock_garbage = "Here is your JSON: {anomaly: 'HIGH', ...} no wait."
     
-    with patch("agents.anomaly_detector_agent.call_gemini") as mock_call:
+    with patch("epiclimate_hmas.internal.anomaly_detector_agent.impl.call_gemini") as mock_call:
         mock_call.return_value = mock_garbage
         
         result = agent.run("Test Region", 1.0, 10.0, 70.0)

@@ -2,7 +2,7 @@
 
 EpiClimate HMAS is a Hierarchical Multi-Agent System that predicts climate-driven disease outbreak risk by autonomously integrating live climate data with epidemiological knowledge using Google Gemini 2.0 Flash.
 
-Climate change is actively expanding disease vectors into new regions. Over 4 billion people are at risk from climate-sensitive diseases. Between 2030–2050, climate change is projected to cause 250,000 additional deaths per year. Current early warning systems are reactive — they alert AFTER outbreaks begin. EpiClimate HMAS predicts outbreaks BEFORE they happen by reading climate signals weeks in advance.
+Built for the **Dallas Regional Science and Engineering Fair (DRSEF) 2027** by **Kush Bharadiya**.
 
 ## Architecture
 
@@ -12,79 +12,70 @@ graph TD
     Main --> Epi[Epi Orchestrator]
     Main --> Resp[Response Orchestrator]
 
-    subgraph Climate Intelligence
+    subgraph "Climate Intelligence (Internal)"
     Climate --> A1[Temperature Agent]
     Climate --> A2[Precipitation Agent]
     Climate --> A3[Anomaly Detector Agent]
     end
 
-    subgraph Epidemiological Intelligence
+    subgraph "Epidemiological Intelligence (Internal)"
     Epi --> A4[Disease Tracker Agent]
     Epi --> A5[Correlation Agent]
     Epi --> A6[Prediction Agent]
     end
 
-    subgraph Response Intelligence
+    subgraph "Response Intelligence (Internal)"
     Resp --> A7[Risk Mapper Agent]
     Resp --> A8[Resource Recommender Agent]
     Resp --> A9[Alert Publisher Agent]
     end
 ```
 
-## Setup
+## Key Features
+- **Hierarchical Architecture**: 13 active components (1 main orchestrator, 3 sub-orchestrators, 9 specialist agents).
+- **Real-Time Data**: Integrates Open-Meteo (Weather), WHO RSS, ProMED RSS, ReliefWeb, and GDELT News.
+- **Gemini 2.0 Flash Grounding**: Agents use live Google Search grounding for scientific correlation and risk assessment.
+- **ADK Integration**: Accessible via a modern Web UI using the Google Agent Development Kit (ADK).
+- **Persistent Storage**: All predictions and reports are saved to a local SQLite database (`epiclimate.db`).
 
-1. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Project Structure
+- `epiclimate_hmas/`: Core package.
+  - `agent.py`: ADK Root Agent definition.
+  - `internal/`: Specialist agents and orchestrators.
+- `docs/`: Technical documentation (Architecture, API Reference, Changelog).
+- `tests/`: Automated test suite.
+- `main.py`: Interactive CLI entry point.
+- `database.py`: SQLite storage layer.
+- `utils.py`: Shared utilities (Gemini client, geocoding, JSON parsing).
 
-2. **Configure API Key**:
-   Create a `.env` file and add your Google Gemini API key:
-   ```
-   GEMINI_API_KEY=your_actual_key_here
-   ```
+## Setup & Usage
 
-3. **Run the system**:
-   ```bash
-   python main.py
-   ```
+### 1. Prerequisites
+- Python 3.10+
+- Gemini API Key (stored in `.env`)
 
-### Web UI (Agent Development Kit)
-
-This system is compatible with the **Google ADK** Web UI. To launch the interactive browser-based dashboard:
-
+### 2. Installation
 ```bash
-python -m google.adk.cli web app
+pip install -r requirements.txt
 ```
 
-Once running, you can chat with the `epiclimate_hmas_master` agent to run reports or analyze specific tiers.
+### 3. Run Interactive CLI
+```bash
+python main.py
+```
 
-## Science Fair Test Cases
-
-| Case | Country | Disease | Year | Rationale |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | Brazil | Dengue | 2024 | Record 7.6M cases |
-| 2 | Sudan | Cholera | 2023 | 252,000+ cases |
-| 3 | Kenya | Malaria | 2023 | Spike in highlands |
-| 4 | Bangladesh | Dengue | 2023 | Worst in decades |
-| 5 | Mozambique | Cholera | 2023 | Post-cyclone outbreak |
-
-## Research Question and Hypothesis
-
-**Research Question**: Can a Hierarchical Multi-Agent AI System that autonomously integrates real-time climate data with historical epidemiological records predict the elevated risk of climate-driven disease outbreaks with greater accuracy and earlier lead time than a historical baseline model?
-
-**Hypothesis**: An HMAS correlating climate anomalies with historical outbreak patterns will correctly identify elevated disease risk at least 4 weeks in advance with an accuracy greater than 60%, outperforming a baseline model that uses historical averages alone.
+### 4. Run ADK Web UI
+```bash
+adk run epiclimate_hmas
+```
 
 ## Documentation
-
-- [project_specs.md](docs/project_specs.md): Science fair specs, research Q, hypothesis.
-- [architecture.md](docs/architecture.md): Full HMAS design, agent map, data flow.
-- [api_reference.md](docs/api_reference.md): Every API, endpoints, params, response shapes.
-- [experiment_design.md](docs/experiment_design.md): 5 test cases, variables, methodology.
-- [changelog.md](docs/changelog.md): Version history — update after every session.
+- [System Architecture](docs/architecture.md)
+- [API Reference](docs/api_reference.md)
+- [Changelog](docs/changelog.md)
+- [Project Specs](docs/project_specs.md)
 
 ## Project Info
-
 **Student**: Kush Bharadiya  
 **Grade**: 8th grade  
 **Fair**: Dallas Regional Science and Engineering Fair (DRSEF) 2027
